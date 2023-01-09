@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tic_tac_toe/UI/AppPages.dart';
+import 'package:tic_tac_toe/Utils/FileToWidget.dart';
 
 class HomePage extends StatelessWidget implements AppPages{
-  HomePage({Key? key, required this.widthBreakPoint}) : super(key: key);
+  HomePage({Key? key, required this.widthBreakPoint, required this.goToNextPage}) : super(key: key);
+
+  late Function goToNextPage;
   late int widthBreakPoint;
 
   final PageController controller = PageController();
@@ -26,8 +31,8 @@ class HomePage extends StatelessWidget implements AppPages{
     return SingleChildScrollView(
       child: Column(
         children: [
-          Block_1(widthBreakPoint: widthBreakPoint,),
-          Block_2(),
+          Block_1(widthBreakPoint: widthBreakPoint, goToNextPage: goToNextPage,),
+          Block_2(sizeBreakingPoint: widthBreakPoint,),
         ],
       ),
     );
@@ -37,17 +42,18 @@ class HomePage extends StatelessWidget implements AppPages{
     return PageView(
       controller: controller,
       children: [
-        Block_1(widthBreakPoint: widthBreakPoint,),
-        Block_2(),
+        Block_1(widthBreakPoint: widthBreakPoint, goToNextPage: goToNextPage,),
+        Block_2(sizeBreakingPoint: widthBreakPoint,),
       ],
     );
   }
 }
 
 class Block_1 extends StatelessWidget {
-  Block_1({Key? key, required this.widthBreakPoint}) : super(key: key);
+  Block_1({Key? key, required this.widthBreakPoint, required this.goToNextPage}) : super(key: key);
   final double _width =  WidgetsBinding.instance.window.physicalSize.width;
   late int widthBreakPoint;
+  late Function goToNextPage;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +98,7 @@ class Block_1 extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 12),
                     child: TextButton(
                         onPressed: () {
-                          // TODO - Navigate to the Play Page
+                          goToNextPage(2);
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -141,7 +147,7 @@ class Block_1 extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 12),
                       child: TextButton(
                           onPressed: () {
-                            // TODO - Navigate to the Play Page
+                            goToNextPage(2);
                           },
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.blue,
@@ -163,17 +169,90 @@ class Block_1 extends StatelessWidget {
 }
 
 class Block_2 extends StatelessWidget {
-  const Block_2({Key? key}) : super(key: key);
+  Block_2({Key? key, required this.sizeBreakingPoint}) : super(key: key);
+  int sizeBreakingPoint;
+  String textFilePath = "texts/homePageBlock2.txt";
+  List<Widget> widgetList = [];
+  bool _loadedBlockWidgets = false;
+
+  Future<Widget> _getBlock() async{
+    if (!_loadedBlockWidgets) {
+      Future<List<Widget>> textWidgets = _getLinesWidget(textFilePath);
+      textWidgets.then((List<Widget> widgets) => widgetList.addAll(widgets));
+    }
+
+    _loadedBlockWidgets = true;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: widgetList,
+    );
+  }
+
+  // This function reads the text file and convert the lines to text widgets
+  Future<List<Widget>> _getLinesWidget(String path) async {
+    late List<String> lines;
+    String textFile = await rootBundle.loadString(path);
+    lines = textFile.split("\n");
+
+    List<Widget> textWidgets = [];
+    Future.forEach(lines, (String line) {
+      textWidgets.add(_createLineWidget(line));
+      print(line);
+    });
+    return textWidgets;
+  }
+
+  Widget _createLineWidget(String line) {
+    late EdgeInsets padding;
+    late FontWeight weight;
+
+    // If line starts with '###', this is a header line
+    if(line.startsWith("###")) {
+      padding = EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 10);
+      weight = FontWeight.w700;
+      line = line.substring(3);
+    } else {
+      padding = EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10);
+      weight = FontWeight.w400;
+    }
+    // Else this is not a heading
+    return Padding(
+      padding: padding,
+      child: Text(line, style: TextStyle(fontWeight: weight, color: Colors.white),),
+    );
+  }
+
+  Widget _createWideBlock() {
+    return Container(
+      color: Colors.brown,
+      child: SizedBox(
+        height: 600,
+        child: SizedBox.expand(
+            child: FileToWidget(filePath: textFilePath).getFutureBuilder()),
+      )
+    );
+  }
+
+  Widget _createNormalBlock() {
+    return Container(
+      color: Colors.brown,
+      child: FileToWidget(filePath: textFilePath).getFutureBuilder()
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SizedBox(
-        height: 500,
-        child: Container(
-          color: Colors.white,
-          ),
-        ),
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          // Determines the width of the screen
+          // If the size is larger then the breaking point, then web page format will be used, else phone format
+          if (constraints.maxWidth > sizeBreakingPoint) {
+            return _createWideBlock();
+          } else {
+            return _createNormalBlock();
+          }
+        },
     );
   }
 }

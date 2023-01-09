@@ -4,6 +4,7 @@ import 'package:tic_tac_toe/UI/AppPages.dart';
 import 'package:tic_tac_toe/UI/HomePage.dart';
 import 'package:tic_tac_toe/UI/PageViewScrollBehavior.dart';
 import 'package:tic_tac_toe/UI/PlayPage.dart';
+import 'package:tic_tac_toe/UI/SupportPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -56,10 +57,11 @@ class _FoundationState extends State<Foundation> {
   int sizeBreakingPoint = 800;
 
   // Lists of pages that the user can be redirected to
-  late List<AppPages> appPages = [HomePage(widthBreakPoint: 800,), AboutPage(), PlayPage(),];
+  late List<AppPages> appPages = [HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,), AboutPage(),
+    PlayPage(widthBreakPoint: sizeBreakingPoint,), SupportPage(widthBreakingPoint: sizeBreakingPoint)];
 
   int currentIndex = 0;
-  late AppPages currentPage = HomePage(widthBreakPoint: 800,);
+  late AppPages currentPage = HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,);
 
 
   void changePageTo(int index) {
@@ -122,7 +124,6 @@ class _FoundationState extends State<Foundation> {
                 padding: const EdgeInsets.all(15),
                 child: TextButton(
                   onPressed: () {
-                    // TODO - Navigate to About Page
                     changePageTo(ABOUT);
                   },
                   child: Text(aboutPageTitle),
@@ -132,7 +133,6 @@ class _FoundationState extends State<Foundation> {
                 padding: const EdgeInsets.all(15),
                 child: TextButton(
                   onPressed: () {
-                    // TODO - Navigate to Play Page
                     changePageTo(PLAY);
                   },
                   child: Text(playPageTitle),
@@ -142,7 +142,7 @@ class _FoundationState extends State<Foundation> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextButton(
                   onPressed: () {
-                    // TODO - Navigate to Support Page
+                    changePageTo(SUPPORT);
                   },
                   child: Text(supportPageTitle),
                 ),
@@ -200,7 +200,6 @@ class _FoundationState extends State<Foundation> {
               leading: const Icon(Icons.play_arrow_outlined, color: Colors.greenAccent),
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
-                // TODO - Navigate to Game Page
                 changePageTo(PLAY);
               },
             ),
@@ -209,7 +208,6 @@ class _FoundationState extends State<Foundation> {
               title: Text(aboutPageTitle),
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
-                // TODO - Navigate to About Page
                 changePageTo(ABOUT);
               },
             ),
@@ -218,7 +216,7 @@ class _FoundationState extends State<Foundation> {
               title: Text(supportPageTitle),
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
-                // TODO - Navigate to Support Page
+                changePageTo(SUPPORT);
               },
             ),
           ],
