@@ -173,55 +173,6 @@ class Block_2 extends StatelessWidget {
   int sizeBreakingPoint;
   String textFilePath = "texts/homePageBlock2.txt";
   List<Widget> widgetList = [];
-  bool _loadedBlockWidgets = false;
-
-  Future<Widget> _getBlock() async{
-    if (!_loadedBlockWidgets) {
-      Future<List<Widget>> textWidgets = _getLinesWidget(textFilePath);
-      textWidgets.then((List<Widget> widgets) => widgetList.addAll(widgets));
-    }
-
-    _loadedBlockWidgets = true;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: widgetList,
-    );
-  }
-
-  // This function reads the text file and convert the lines to text widgets
-  Future<List<Widget>> _getLinesWidget(String path) async {
-    late List<String> lines;
-    String textFile = await rootBundle.loadString(path);
-    lines = textFile.split("\n");
-
-    List<Widget> textWidgets = [];
-    Future.forEach(lines, (String line) {
-      textWidgets.add(_createLineWidget(line));
-      print(line);
-    });
-    return textWidgets;
-  }
-
-  Widget _createLineWidget(String line) {
-    late EdgeInsets padding;
-    late FontWeight weight;
-
-    // If line starts with '###', this is a header line
-    if(line.startsWith("###")) {
-      padding = EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 10);
-      weight = FontWeight.w700;
-      line = line.substring(3);
-    } else {
-      padding = EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10);
-      weight = FontWeight.w400;
-    }
-    // Else this is not a heading
-    return Padding(
-      padding: padding,
-      child: Text(line, style: TextStyle(fontWeight: weight, color: Colors.white),),
-    );
-  }
 
   Widget _createWideBlock() {
     return Container(
