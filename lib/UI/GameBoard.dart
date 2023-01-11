@@ -107,7 +107,6 @@ class GameBoardState extends State<GameBoard> {
           gameBoardStateKeys[i].currentState!.clearBlock();
         }
         widget.endGameCallBack();
-        print("Game reseted");
       });
     }
 

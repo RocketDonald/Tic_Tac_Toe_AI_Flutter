@@ -51,7 +51,7 @@ class _PlayPageState extends State<PlayPage> {
           if (constrains.maxWidth > widget.widthBreakPoint) {
             return _widePage(constrains.maxWidth, constrains.maxHeight);
           } else {
-            return _normalPage();
+            return _normalPage(constrains.maxWidth, constrains.maxHeight);
           }
         },
       );
@@ -79,10 +79,10 @@ class _PlayPageState extends State<PlayPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                _createPlayerSideRadioButton(),
+                _createPlayerSideRadioButton(false),
                 Padding(
                   padding: const EdgeInsets.only(left: 18.0, top: 10, bottom: 10),
-                  child: _createDifficultiesDropdownList(),
+                  child: _createDifficultiesDropdownList(false),
                 ),
               ],
             ),
@@ -99,10 +99,31 @@ class _PlayPageState extends State<PlayPage> {
       );
   }
 
-  Widget _normalPage() {
+  Widget _normalPage(double width, double height) {
     return Column(
       children: [
-
+        Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 2.0, color: Colors.black12),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(flex: 1, child: _createPlayerSideRadioButton(true)),
+                Flexible(flex: 1, child: _createDifficultiesDropdownList(true)),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top:18.0),
+          child: _createGameBoard(width, height),
+        ),
       ]
     );
   }
@@ -161,94 +182,190 @@ class _PlayPageState extends State<PlayPage> {
       );
   }
 
-  Widget _createDifficultiesDropdownList() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text("Difficulties", textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
-          DropdownButton(
-              value: seletedDifficulties,
-              iconEnabledColor: Colors.greenAccent,
-              isExpanded: true,
-              underline: Container(
-                height: 2,
-                color: Colors.greenAccent,
-              ),
-              items: difficulties.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? value){
-                if (value != null) {
-                  setState(() {
-                    seletedDifficulties = value;
-                    _setScoreText();
-                    // Reset the score and the board
-                    gameBoardKey.currentState!.endGameProtocol(0);
-                    manager.resetScores();
-                  });
-                }
-              }),
-        ],
-      );
+  Widget _createDifficultiesDropdownList(bool normal) {
+      if (!normal) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Difficulties", textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
+            DropdownButton(
+                value: seletedDifficulties,
+                iconEnabledColor: Colors.greenAccent,
+                isExpanded: true,
+                underline: Container(
+                  height: 2,
+                  color: Colors.greenAccent,
+                ),
+                items: difficulties.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value){
+                  if (value != null) {
+                    setState(() {
+                      seletedDifficulties = value;
+                      // Reset the score and the board
+                      gameBoardKey.currentState!.endGameProtocol(0);
+                      manager.resetScores();
+                      _setScoreText();
+                    });
+                  }
+                }),
+          ],
+        );
+      } else {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Difficulties", textAlign: TextAlign.left, style: TextStyle(fontSize: 16)),
+            DropdownButton(
+                value: seletedDifficulties,
+                iconEnabledColor: Colors.greenAccent,
+                isExpanded: true,
+                underline: Container(
+                  height: 2,
+                  color: Colors.greenAccent,
+                ),
+                items: difficulties.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value){
+                  if (value != null) {
+                    setState(() {
+                      seletedDifficulties = value;
+                      // Reset the score and the board
+                      gameBoardKey.currentState!.endGameProtocol(0);
+                      manager.resetScores();
+                      _setScoreText();
+                    });
+                  }
+                }),
+          ],
+        );
+      }
+
   }
 
   // Create a set of radio buttons that indicate the gamemode (PVE/EVE)
-  Widget _createPlayerSideRadioButton() {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 18, top: 10, bottom: 8),
-            child: Text("Pick a side", textAlign: TextAlign.center, style: TextStyle(fontSize: 16),),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(vertical: -4),
-            title: Align(alignment: Alignment.centerLeft, child: playerSide[0]),
-            leading: Radio<Icon>(
-              value: playerSide[0],
-              groupValue: selectedPlayerSide,
-              onChanged: (Icon? value) {
-                setState(() {
-                  if (value != null) {
-                    selectedPlayerSide = value;
-                    manager.humanPlayerSwitchSide();
-                    _setScoreText();
-                    // Reset the score and the board
-                    gameBoardKey.currentState!.endGameProtocol(0);
-                    gameBoardKey.currentState!.setHumanPlayerSide(1);
-                    manager.resetScores();
-                  }
-                });
-              },
+  Widget _createPlayerSideRadioButton(bool normal) {
+      if(!normal) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 18, top: 10, bottom: 8),
+              child: Text("Pick a side", textAlign: TextAlign.center, style: TextStyle(fontSize: 16),),
             ),
-          ),
-          ListTile(
-            visualDensity: VisualDensity(vertical: 0),
-            title: Align(alignment: Alignment.centerLeft, child: playerSide[1]),
-            leading: Radio<Icon>(
-              value: playerSide[1],
-              groupValue: selectedPlayerSide,
-              onChanged: (Icon? value) {
-                setState(() {
-                  if (value != null) {
-                    selectedPlayerSide = value;
-                    manager.humanPlayerSwitchSide();
-                    _setScoreText();
-                    // Reset the score and the board
-                    gameBoardKey.currentState!.endGameProtocol(0);
-                    manager.resetScores();
-                    gameBoardKey.currentState!.setHumanPlayerSide(2);
-                    gameBoardKey.currentState!.aiMakesFirstMove();
-                  }
-                });
-              },
+            ListTile(
+              visualDensity: VisualDensity(vertical: -4),
+              title: Align(alignment: Alignment.centerLeft, child: playerSide[0]),
+              leading: Radio<Icon>(
+                value: playerSide[0],
+                groupValue: selectedPlayerSide,
+                onChanged: (Icon? value) {
+                  setState(() {
+                    if (value != null) {
+                      selectedPlayerSide = value;
+                      manager.humanPlayerSwitchSide();
+                      _setScoreText();
+                      // Reset the score and the board
+                      gameBoardKey.currentState!.endGameProtocol(0);
+                      gameBoardKey.currentState!.setHumanPlayerSide(1);
+                    }
+                  });
+                },
+              ),
             ),
-          ),
-        ],
-      );
+            ListTile(
+              visualDensity: VisualDensity(vertical: 0),
+              title: Align(alignment: Alignment.centerLeft, child: playerSide[1]),
+              leading: Radio<Icon>(
+                value: playerSide[1],
+                groupValue: selectedPlayerSide,
+                onChanged: (Icon? value) {
+                  setState(() {
+                    if (value != null) {
+                      selectedPlayerSide = value;
+                      manager.humanPlayerSwitchSide();
+                      _setScoreText();
+                      // Reset the score and the board
+                      gameBoardKey.currentState!.endGameProtocol(0);
+                      gameBoardKey.currentState!.setHumanPlayerSide(2);
+                      gameBoardKey.currentState!.aiMakesFirstMove();
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
+        );
+      } else {
+       return Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
+         children: [
+           Padding(
+             padding: const EdgeInsets.only(left: 18),
+             child: Text("Pick a side", textAlign: TextAlign.center, style: TextStyle(fontSize: 16),),
+           ),
+           Row(
+             children: [
+               Flexible(
+                 child: ListTile(
+                   visualDensity: VisualDensity(vertical: -4),
+                   title: Align(alignment: Alignment.centerLeft, child: playerSide[0]),
+                   leading: Radio<Icon>(
+                     value: playerSide[0],
+                     groupValue: selectedPlayerSide,
+                     onChanged: (Icon? value) {
+                       setState(() {
+                         if (value != null) {
+                           selectedPlayerSide = value;
+                           manager.humanPlayerSwitchSide();
+                           _setScoreText();
+                           // Reset the score and the board
+                           gameBoardKey.currentState!.endGameProtocol(0);
+                           gameBoardKey.currentState!.setHumanPlayerSide(1);
+                         }
+                       });
+                     },
+                   ),
+                 ),
+               ),
+               Flexible(
+                 child: ListTile(
+                   visualDensity: VisualDensity(vertical: 0),
+                   title: Align(alignment: Alignment.centerLeft, child: playerSide[1]),
+                   leading: Radio<Icon>(
+                     value: playerSide[1],
+                     groupValue: selectedPlayerSide,
+                     onChanged: (Icon? value) {
+                       setState(() {
+                         if (value != null) {
+                           selectedPlayerSide = value;
+                           manager.humanPlayerSwitchSide();
+                           _setScoreText();
+                           // Reset the score and the board
+                           gameBoardKey.currentState!.endGameProtocol(0);
+                           gameBoardKey.currentState!.setHumanPlayerSide(2);
+                           gameBoardKey.currentState!.aiMakesFirstMove();
+                         }
+                       });
+                     },
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ],
+       );
+      }
   }
 
 
