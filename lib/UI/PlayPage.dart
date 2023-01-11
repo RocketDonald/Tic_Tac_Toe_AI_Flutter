@@ -100,8 +100,10 @@ class _PlayPageState extends State<PlayPage> {
   }
 
   Widget _normalPage() {
-    return Row(
+    return Column(
+      children: [
 
+      ]
     );
   }
 
@@ -119,6 +121,25 @@ class _PlayPageState extends State<PlayPage> {
       setState(() {
         _scoreText = text;
       });
+  }
+
+  void _setWinningText() {
+    setState(() {
+      if (_restartingText == "") {
+        _restartingText = "A new game will start in 2 seconds";
+      } else {
+        _restartingText = "";
+      }
+    });
+  }
+
+  /// This is a call back function that will be passed into the GameBoard
+  /// When a game finished, this function will be called to change the scoreText and winningText in this class state
+  void endGameCallBack() {
+    setState(() {
+      _setScoreText();
+      _setWinningText();
+    });
   }
 
   Widget _createGameBoard(double width, double height) {
@@ -197,6 +218,7 @@ class _PlayPageState extends State<PlayPage> {
                     _setScoreText();
                     // Reset the score and the board
                     gameBoardKey.currentState!.endGameProtocol(0);
+                    gameBoardKey.currentState!.setHumanPlayerSide(1);
                     manager.resetScores();
                   }
                 });
@@ -218,6 +240,7 @@ class _PlayPageState extends State<PlayPage> {
                     // Reset the score and the board
                     gameBoardKey.currentState!.endGameProtocol(0);
                     manager.resetScores();
+                    gameBoardKey.currentState!.setHumanPlayerSide(2);
                     gameBoardKey.currentState!.aiMakesFirstMove();
                   }
                 });
@@ -228,21 +251,6 @@ class _PlayPageState extends State<PlayPage> {
       );
   }
 
-  void _setWinningText() {
-      setState(() {
-        if (_restartingText == "") {
-          _restartingText = "A new game will start in 2 seconds";
-        } else {
-          _restartingText = "";
-        }
-      });
-  }
 
-  void endGameCallBack() {
-    setState(() {
-      _setScoreText();
-      _setWinningText();
-    });
-  }
 }
 

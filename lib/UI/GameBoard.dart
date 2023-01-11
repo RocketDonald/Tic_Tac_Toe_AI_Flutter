@@ -83,23 +83,33 @@ class GameBoardState extends State<GameBoard> {
 
   /// Called when the game is ended after check win.
   /// This protocol notify PlayPage to rebuild the scoreText widget, also reset the state in gameManager
-  /// and clear each state
-  void endGameProtocol(int delayInSeconds) {
+  /// and clear each state.
+  /// @param delayInSeconds represents how many seconds to wait for clearing the blocks, nice for visual appearance.
+  void endGameProtocol(int delayInSeconds) async{
     widget.endGameCallBack();
     widget.manager.resetBoard();
     for (int i = 0; i < 9; i++) {
       gameBoardStateKeys[i].currentState!.blockInput();
     }
 
-    // Clear each block after 2 seconds delay
-    Future.delayed(Duration(seconds: delayInSeconds), () {
-      // Clear each block state
+    // Separating no delay and having delay, as using Future.delay will cause other threads to run first
+    if (delayInSeconds == 0) {
+      // Clear each block immediately
       for (int i = 0; i < 9; i++) {
         gameBoardStateKeys[i].currentState!.clearBlock();
       }
       widget.endGameCallBack();
-      print("Game reseted");
-    });
+    } else {
+      // Clear each block after 2 seconds delay
+      await Future.delayed(Duration(seconds: delayInSeconds), () {
+        // Clear each block state
+        for (int i = 0; i < 9; i++) {
+          gameBoardStateKeys[i].currentState!.clearBlock();
+        }
+        widget.endGameCallBack();
+        print("Game reseted");
+      });
+    }
 
     aiMakesFirstMove();
   }
@@ -148,10 +158,10 @@ class GameBoardState extends State<GameBoard> {
   }
 
   /// The AI will make the first move if it is a AI vs AI game or the player selected 'O'
-  void aiMakesFirstMove() {
+  void aiMakesFirstMove() async{
     if (_humanPlayerSide == 0 || _humanPlayerSide == 2) {
-      // After 800ms, the AI makes its first move
-      Future.delayed(const Duration(milliseconds: 200), () {
+      // After 30ms, the AI makes its first move
+      await Future.delayed(const Duration(milliseconds: 30), () {
         aiMove(widget.difficulty);
       });
     }
