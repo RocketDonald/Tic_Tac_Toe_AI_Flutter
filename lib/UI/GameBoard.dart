@@ -113,6 +113,12 @@ class GameBoardState extends State<GameBoard> {
     aiMakesFirstMove();
   }
 
+  int getMoveO() {
+    String state = widget.manager.getState().toString();
+    return widget.manager.bestMovesO[state];
+
+  }
+
   /// This function is called after a player makes a move or an AI makes a move.
   /// This function will directly change the state of the block in order to display the correct value.
   // TODO - Implement this method and replace the stub code
@@ -120,11 +126,12 @@ class GameBoardState extends State<GameBoard> {
     print("AI Moving");
     // Stub code - remove the code below
     List<int> possibleMoves = [];
-    for (int i = 0; i < 9; i++) {
-      if (widget.manager.boardState[i] == 0) {
-        possibleMoves.add(i);
-      }
-    }
+    // for (int i = 0; i < 9; i++) {
+    //   if (widget.manager.boardState[i] == 0) {
+    //     possibleMoves.add(i);
+    //   }
+    // }
+    possibleMoves.add(getMoveO());
 
     // Keep the code below, but change the condition of the next line if needed.
     // Set the state of the desired button.

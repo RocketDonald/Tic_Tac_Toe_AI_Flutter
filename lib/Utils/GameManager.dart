@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// This class manages the game and monitor the states
 ///
@@ -10,6 +14,7 @@ class GameManager {
   int _playerTwoScore = 0;
   int _tie = 0;
   int _humanPlayerSide = 1; // 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
+  var bestMovesO;
 
   // 0 = Nothing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   List<int> boardState = [0, 0, 0,
@@ -32,6 +37,26 @@ class GameManager {
     [2,4,6]
   ];
 
+  /// 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
+  GameManager(int humanPlayerSide) {
+    _humanPlayerSide = humanPlayerSide;
+    WidgetsFlutterBinding.ensureInitialized();
+    bestMovesO = rootBundle.loadString("Player_O_AI.json").then((jsonContent) => parseJson(jsonContent));
+  }
+
+  void parseJson(jsonContent) {
+    bestMovesO = json.decode(jsonContent);
+  }
+
+  /// This function converts the board state in decimal form
+  int getState() {
+    int sum = 0;
+    for (int i = 0; i < 9; i++) {
+      sum += boardState[i] * pow(3, i) as int;
+    }
+    return sum;
+  }
+
   int get playerOneScore {
     return _playerOneScore;
   }
@@ -53,10 +78,6 @@ class GameManager {
     return (moves % 2) + 1;
   }
 
-  /// 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
-  GameManager(int humanPlayerSide) {
-    _humanPlayerSide = humanPlayerSide;
-  }
 
   /// Only be called when the human player changes their side by pressing the radio button
   /// in the PlayPage.

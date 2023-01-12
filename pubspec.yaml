@@ -59,6 +59,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - Player_O_AI.json
+    - Player_X_AI.json
     - images/
     - texts/
 
