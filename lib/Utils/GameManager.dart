@@ -15,6 +15,7 @@ class GameManager {
   int _tie = 0;
   int _humanPlayerSide = 1; // 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   var bestMovesO;
+  var bestMovesX;
 
   // 0 = Nothing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   List<int> boardState = [0, 0, 0,
@@ -41,13 +42,14 @@ class GameManager {
   GameManager(int humanPlayerSide) {
     _humanPlayerSide = humanPlayerSide;
     WidgetsFlutterBinding.ensureInitialized();
-    bestMovesO = rootBundle.loadString("Player_O_AI.json").then((jsonContent) => parseJson(jsonContent));
+    bestMovesO = rootBundle.loadString("Player_O_AI.json").then((jsonContentO) => parseJson(jsonContentO));
+    bestMovesX = rootBundle.loadString("Player_X_AI.json").then((jsonContentX) => parseJson(jsonContentX));
   }
 
   void parseJson(jsonContent) {
     bestMovesO = json.decode(jsonContent);
   }
-
+//
   /// This function converts the board state in decimal form
   int getState() {
     int sum = 0;

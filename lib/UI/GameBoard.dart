@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/Utils/GameManager.dart';
 
@@ -116,8 +114,13 @@ class GameBoardState extends State<GameBoard> {
   int getMoveO() {
     String state = widget.manager.getState().toString();
     return widget.manager.bestMovesO[state];
-
   }
+
+  int getMoveX() {
+    String state = widget.manager.getState().toString();
+    return widget.manager.bestMovesX[state];
+  }
+
 
   /// This function is called after a player makes a move or an AI makes a move.
   /// This function will directly change the state of the block in order to display the correct value.
@@ -125,19 +128,19 @@ class GameBoardState extends State<GameBoard> {
   void aiMove(String difficulty) {
     print("AI Moving");
     // Stub code - remove the code below
-    List<int> possibleMoves = [];
+    // List<int> possibleMoves = [];
     // for (int i = 0; i < 9; i++) {
     //   if (widget.manager.boardState[i] == 0) {
     //     possibleMoves.add(i);
     //   }
     // }
-    possibleMoves.add(getMoveO());
+    // possibleMoves.add(getMoveO());
 
     // Keep the code below, but change the condition of the next line if needed.
     // Set the state of the desired button.
-    if (possibleMoves.isNotEmpty) {
-      int move = possibleMoves[Random().nextInt(possibleMoves.length)];
-
+    // if (possibleMoves.isNotEmpty) {
+    //   int move = possibleMoves[Random().nextInt(possibleMoves.length)];
+      int move = getMoveO();
       // Delay 1 second for a better appearance
       // First, make every button disabled
       blockEnableDisableSwitch();
@@ -150,7 +153,6 @@ class GameBoardState extends State<GameBoard> {
         // Fourth, set the desired block to a played move
         gameBoardStateKeys[move].currentState!.changeState();
       });
-    }
   }
 
   /// Setting all empty blocks to disable if the block is enabled

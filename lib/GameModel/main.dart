@@ -1,7 +1,7 @@
 import 'package:tic_tac_toe/GameModel/AIStrategy.dart';
-import 'package:tic_tac_toe/GameModel/Board.dart';
-import 'package:tic_tac_toe/GameModel/Game.dart';
-import 'package:tic_tac_toe/GameModel/Player.dart';
+import 'Board.dart';
+import 'Game.dart';
+import 'Player.dart';
 
 void main() {
   AIStrategy strategy = AIStrategy();
