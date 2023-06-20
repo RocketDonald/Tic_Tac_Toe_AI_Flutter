@@ -6,7 +6,7 @@ import 'package:tic_tac_toe/UI/GameBoard.dart';
 import 'package:tic_tac_toe/Utils/GameManager.dart';
 
 class PlayPage extends StatefulWidget implements AppPages{
-  int widthBreakPoint;
+  final int widthBreakPoint;
 
   PlayPage({Key? key, required this.widthBreakPoint}) : super(key: key);
 
@@ -57,6 +57,7 @@ class _PlayPageState extends State<PlayPage> {
       );
     }
 
+
   Widget _widePage(double width, double height) {
     return Row(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -67,11 +68,14 @@ class _PlayPageState extends State<PlayPage> {
         flex: 1,
         fit: FlexFit.loose,
         child: Container(
+          color: Colors.black12,
+          /**
           decoration: const BoxDecoration(
             border: Border(
               right: BorderSide(width: 2.0, color: Colors.black12),
             ),
           ),
+              */
           child: Padding(
             padding: const EdgeInsets.only(right: 24),
             child: Column(
@@ -103,11 +107,7 @@ class _PlayPageState extends State<PlayPage> {
     return Column(
       children: [
         Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(width: 2.0, color: Colors.black12),
-            ),
-          ),
+          color: Colors.black26,
           child: Padding(
             padding: const EdgeInsets.all(18.0),
             child: Row(

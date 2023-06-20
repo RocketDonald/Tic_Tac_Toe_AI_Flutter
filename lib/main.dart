@@ -5,6 +5,33 @@ import 'package:tic_tac_toe/UI/HomePage.dart';
 import 'package:tic_tac_toe/UI/PageViewScrollBehavior.dart';
 import 'package:tic_tac_toe/UI/PlayPage.dart';
 import 'package:tic_tac_toe/UI/SupportPage.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Container footer = Container(
+  color: Colors.blueGrey,
+  child: Row(
+    children: [
+      Expanded(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: const Text("© 2023 Donald Tsang, Titus Wong. All rights reserved", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: Colors.white),),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 5),
+                child: InkWell(
+                  child: const Text("https://github.com/RocketDonald/Tic_Tac_Toe_AI_Flutter", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300, color: Colors.white),),
+                  onTap: () => launchUrl(Uri.parse("https://github.com/RocketDonald/Tic_Tac_Toe_AI_Flutter")),
+                ),
+              )
+            ],
+          ),
+      ),
+    ],
+  ),
+);
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +50,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            primary: Colors.blueGrey,
+            foregroundColor: Colors.blueGrey,
             textStyle: const TextStyle(fontSize: 17, fontFamily: 'Montserrat'),
           )
         )
@@ -96,13 +123,13 @@ class _FoundationState extends State<Foundation> {
         appBar: AppBar(
           foregroundColor: Colors.greenAccent,
           backgroundColor: Colors.white,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12, top: 12),
+          leading: const Padding(
+            padding: EdgeInsets.only(left: 12, top: 12),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.start,
               alignment: WrapAlignment.start,
               direction: Axis.horizontal,
-              children: const [
+              children: [
                 Icon(Icons.circle_outlined, size: 16,),
                 Icon(Icons.close, size: 16),
                 Icon(Icons.circle_outlined, size: 16),
@@ -151,6 +178,7 @@ class _FoundationState extends State<Foundation> {
           ),
         ),
         body: currentPage,
+        bottomSheet: footer,
       ),
     );
   }
@@ -223,6 +251,7 @@ class _FoundationState extends State<Foundation> {
         ),
       ),
       body: currentPage,
+      bottomSheet: footer,
     );
   }
 }
