@@ -112,13 +112,13 @@ class GameBoardState extends State<GameBoard> {
   }
 
   int getMoveO() {
-    String state = widget.manager.getState().toString();
-    return widget.manager.bestMovesO[state];
+    int state = widget.manager.getState();
+    return widget.manager.getAIMove(widget.manager.O, state);
   }
 
   int getMoveX() {
-    String state = widget.manager.getState().toString();
-    return widget.manager.bestMovesX[state];
+    int state = widget.manager.getState();
+    return widget.manager.getAIMove(widget.manager.X, state);
   }
 
 

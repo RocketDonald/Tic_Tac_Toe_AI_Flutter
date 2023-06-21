@@ -37,7 +37,9 @@ class _PlayPageState extends State<PlayPage> {
 
     @override
     void initState() {
+      // Init options
       playerSide = [iconX, iconO];
+      // Pre-selected player using X
       selectedPlayerSide = iconX;
       manager = GameManager(1);
       _setScoreText();
@@ -69,13 +71,6 @@ class _PlayPageState extends State<PlayPage> {
         fit: FlexFit.loose,
         child: Container(
           color: Colors.black12,
-          /**
-          decoration: const BoxDecoration(
-            border: Border(
-              right: BorderSide(width: 2.0, color: Colors.black12),
-            ),
-          ),
-              */
           child: Padding(
             padding: const EdgeInsets.only(right: 24),
             child: Column(
@@ -107,7 +102,7 @@ class _PlayPageState extends State<PlayPage> {
     return Column(
       children: [
         Container(
-          color: Colors.black26,
+          color: Colors.black12,
           child: Padding(
             padding: const EdgeInsets.all(18.0),
             child: Row(
@@ -130,13 +125,13 @@ class _PlayPageState extends State<PlayPage> {
 
   void _setScoreText() {
     late String text;
-    if (manager.humanPlayerSide == 1) {
+    if (manager.humanPlayerSide == 1) { // 1 == 'X'
       text = "You  ${manager.playerOneScore} : ${manager.playerTwoScore}  $seletedDifficulties AI";
-    } else if (manager.humanPlayerSide == 2) {
+    } else if (manager.humanPlayerSide == 2) { // 2 == 'O'
       text = "$seletedDifficulties AI  ${manager.playerOneScore} : ${manager.playerTwoScore}  You";
     } else {
       // AI vs AI
-      text = "${manager.playerOneScore} : ${manager.playerTwoScore}";
+      text = "AI-X ${manager.playerOneScore} : ${manager.playerTwoScore} AI-O";
     }
     text += "\n${manager.tie} Ties";
       setState(() {
@@ -144,10 +139,31 @@ class _PlayPageState extends State<PlayPage> {
       });
   }
 
+  /// This function will pop a dialog that tells the player the game has ended and will restart soon
   void _setWinningText() {
     setState(() {
       if (_restartingText == "") {
-        _restartingText = "A new game will start in 2 seconds";
+        _restartingText = "";
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => const Dialog(
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Game Ends."),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("A New Game Will Begin in 2 Seconds"),
+                    )
+                  ],
+                ),
+              ),
+            )
+        );
       } else {
         _restartingText = "";
       }

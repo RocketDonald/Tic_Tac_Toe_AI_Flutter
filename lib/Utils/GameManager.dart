@@ -3,19 +3,30 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tic_tac_toe/GameModel/AIStrategy.dart';
+import 'package:tic_tac_toe/GameModel/Game.dart';
 
 /// This class manages the game and monitor the states
 ///
 /// This class should be called in PlayPage only.
 /// This class provides methods to check win, set player moves and calculate score
-
+/// This class is a singleton class.
 class GameManager {
+  // Singleton pattern
+  static GameManager _gameManager = GameManager._internal(1);
+
+  final int X = 1;
+  final int O = 2;
+
   int _playerOneScore = 0;
   int _playerTwoScore = 0;
   int _tie = 0;
   int _humanPlayerSide = 1; // 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   var bestMovesO;
   var bestMovesX;
+
+  // Load the AI Strategies
+  AIStrategy strategy = AIStrategy();
 
   // 0 = Nothing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   List<int> boardState = [0, 0, 0,
@@ -38,18 +49,32 @@ class GameManager {
     [2,4,6]
   ];
 
+  /// Singleton factory constructor
+  factory GameManager(int humanPlayerSide) {
+    _gameManager = GameManager._internal(humanPlayerSide);
+    return _gameManager;
+  }
+
+  /// Private constructor
+  GameManager._internal(int humanPlayerSide) {
+    _humanPlayerSide = humanPlayerSide;
+  }
+
+/**
   /// 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
   GameManager(int humanPlayerSide) {
     _humanPlayerSide = humanPlayerSide;
+
     WidgetsFlutterBinding.ensureInitialized();
     bestMovesO = rootBundle.loadString("Player_O_AI.json").then((jsonContentO) => parseJson(jsonContentO));
     bestMovesX = rootBundle.loadString("Player_X_AI.json").then((jsonContentX) => parseJson(jsonContentX));
-  }
 
+  }
+ */
   void parseJson(jsonContent) {
     bestMovesO = json.decode(jsonContent);
   }
-//
+
   /// This function converts the board state in decimal form
   int getState() {
     int sum = 0;
@@ -57,6 +82,14 @@ class GameManager {
       sum += boardState[i] * pow(3, i) as int;
     }
     return sum;
+  }
+
+  int getAIMove(int player, int state) {
+    if (player == X) {
+      return strategy.getAIMoveX(state);
+    } else {
+      return strategy.getAIMoveO(state);
+    }
   }
 
   int get playerOneScore {

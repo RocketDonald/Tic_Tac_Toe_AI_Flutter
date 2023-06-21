@@ -62,6 +62,7 @@ flutter:
   assets:
     - Player_O_AI.json
     - Player_X_AI.json
+    - assets/
     - images/
     - texts/
 

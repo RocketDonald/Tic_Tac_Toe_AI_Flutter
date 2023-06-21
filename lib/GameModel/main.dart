@@ -4,6 +4,7 @@ import 'Game.dart';
 import 'Player.dart';
 
 void main() {
+  // TODO - Move these codes to somewhere runnable && see how to pass objects down the widget tree
   AIStrategy strategy = AIStrategy();
   Player aiX = AIPlayer("X", strategy);
   Player humanO = HumanPlayer("O");
