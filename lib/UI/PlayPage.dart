@@ -7,8 +7,9 @@ import 'package:tic_tac_toe/Utils/GameManager.dart';
 
 class PlayPage extends StatefulWidget implements AppPages{
   final int widthBreakPoint;
+  final GlobalKey dialogScaffoldKey;
 
-  PlayPage({Key? key, required this.widthBreakPoint}) : super(key: key);
+  PlayPage({Key? key, required this.widthBreakPoint, required this.dialogScaffoldKey}) : super(key: key);
 
   @override
   _PlayPageState createState() => _PlayPageState();
@@ -37,7 +38,7 @@ class _PlayPageState extends State<PlayPage> {
 
   // Variables to handle the end game dialog
   bool _dialogPopped = false;
-  late BuildContext dialogContext;
+  BuildContext? dialogContext;
 
     @override
     void initState() {
@@ -149,38 +150,42 @@ class _PlayPageState extends State<PlayPage> {
       if (_dialogPopped == false) {
         // Display the dialog and tell the user the game has ended
         showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (BuildContext context) {
               dialogContext = context;
-              return Dialog(
-                child: SizedBox(
-                  height: 180,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: Dialog(
+                  child: SizedBox(
+                    height: 180,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50),
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 40,
-                          width: 400,
-                          child: Container(
-                              color: Colors.lightBlue
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 40,
+                            width: 400,
+                            child: Container(
+                                color: Colors.lightBlue
+                            ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(18.0),
-                          child: Text("Game Ends.", style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w800),),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text("A New Game Will Begin in 2 Seconds"),
-                        )
-                      ],
+                          const Padding(
+                            padding: EdgeInsets.all(18.0),
+                            child: Text("Game Ends.", style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("A New Game Will Begin in 2 Seconds"),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -191,9 +196,7 @@ class _PlayPageState extends State<PlayPage> {
         _dialogPopped = true;
       } else {
         // Close the dialog box
-        if (dialogContext.runtimeType != null) {
-          Navigator.pop(dialogContext);
-        }
+          Navigator.of(context!).pop();
         _dialogPopped = false;
       }
     });

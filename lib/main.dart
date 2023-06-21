@@ -85,7 +85,7 @@ class _FoundationState extends State<Foundation> {
 
   // Lists of pages that the user can be redirected to
   late List<AppPages> appPages = [HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,), AboutPage(),
-    PlayPage(widthBreakPoint: sizeBreakingPoint,), SupportPage(widthBreakingPoint: sizeBreakingPoint)];
+    PlayPage(widthBreakPoint: sizeBreakingPoint, dialogScaffoldKey: _key,), SupportPage(widthBreakingPoint: sizeBreakingPoint)];
 
   int currentIndex = 0;
   late AppPages currentPage = HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,);
@@ -108,7 +108,7 @@ class _FoundationState extends State<Foundation> {
           // Determines the width of the screen
           // If the size is larger then the breaking point, then web page format will be used, else phone format
           if (constraints.maxWidth > sizeBreakingPoint) {
-            return _buildWideContainers();
+            return _buildWideContainers(_key);
           } else {
             return _buildNormalContainers(_key);
           }
@@ -117,9 +117,10 @@ class _FoundationState extends State<Foundation> {
     );
   }
 
-  Widget _buildWideContainers() {
+  Widget _buildWideContainers(GlobalKey key) {
     return SafeArea(
       child: Scaffold(
+        key: key,
         appBar: AppBar(
           foregroundColor: Colors.greenAccent,
           backgroundColor: Colors.white,

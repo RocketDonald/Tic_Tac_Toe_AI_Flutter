@@ -140,7 +140,12 @@ class GameBoardState extends State<GameBoard> {
     // Set the state of the desired button.
     // if (possibleMoves.isNotEmpty) {
     //   int move = possibleMoves[Random().nextInt(possibleMoves.length)];
-      int move = getMoveO();
+      int move;
+      if (_humanPlayerSide == 1) {
+        move = getMoveO();
+      } else {
+        move = getMoveX();
+      }
       // Delay 1 second for a better appearance
       // First, make every button disabled
       blockEnableDisableSwitch();
@@ -170,7 +175,7 @@ class GameBoardState extends State<GameBoard> {
     if (_humanPlayerSide == 0 || _humanPlayerSide == 2) {
       // After 30ms, the AI makes its first move
       await Future.delayed(const Duration(milliseconds: 30), () {
-        aiMove(widget.difficulty);
+        aiMove(widget.difficulty); //TODO - In this method, only AI_O is moving - Take in extra parameter? Check whose turn within manager?
       });
     }
   }
