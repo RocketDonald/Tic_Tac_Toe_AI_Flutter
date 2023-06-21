@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'Move.dart';
 
 // TODO - Load the AI moves in main page?
 class AIStrategy {
@@ -13,12 +11,6 @@ class AIStrategy {
   late Map bestMovesO;
 
   AIStrategy() {
-    /**
-        rootBundle.loadString("assets/Player_X_AI.json").then((jsonContentX) =>
-            parseJson(jsonContentX, X));
-        rootBundle.loadString("assets/Player_O_AI.json").then((jsonContentO) =>
-            parseJson(jsonContentO, O));
-  */
     loadMoves(); // An async function that fetch all the moves
   }
 
@@ -51,8 +43,6 @@ class AIStrategy {
     await fetchMoves(O).then((val) {
       bestMovesO = val;
     });
-    print(bestMovesX);
-    print(bestMovesO);
   }
 
   void parseJson(jsonContent, int player) {

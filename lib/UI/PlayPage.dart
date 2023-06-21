@@ -35,6 +35,10 @@ class _PlayPageState extends State<PlayPage> {
   late String _scoreText;
   String _restartingText = "";
 
+  // Variables to handle the end game dialog
+  bool _dialogPopped = false;
+  late BuildContext dialogContext;
+
     @override
     void initState() {
       // Init options
@@ -142,30 +146,55 @@ class _PlayPageState extends State<PlayPage> {
   /// This function will pop a dialog that tells the player the game has ended and will restart soon
   void _setWinningText() {
     setState(() {
-      if (_restartingText == "") {
-        _restartingText = "";
+      if (_dialogPopped == false) {
+        // Display the dialog and tell the user the game has ended
         showDialog(
             context: context,
-            builder: (BuildContext context) => const Dialog(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Game Ends."),
+            builder: (BuildContext context) {
+              dialogContext = context;
+              return Dialog(
+                child: SizedBox(
+                  height: 180,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                      ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("A New Game Will Begin in 2 Seconds"),
-                    )
-                  ],
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 400,
+                          child: Container(
+                              color: Colors.lightBlue
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(18.0),
+                          child: Text("Game Ends.", style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w800),),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("A New Game Will Begin in 2 Seconds"),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            )
+              );
+            }
         );
+
+        _dialogPopped = true;
       } else {
-        _restartingText = "";
+        // Close the dialog box
+        if (dialogContext.runtimeType != null) {
+          Navigator.pop(dialogContext);
+        }
+        _dialogPopped = false;
       }
     });
   }
