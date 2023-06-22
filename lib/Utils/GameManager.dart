@@ -60,17 +60,6 @@ class GameManager {
     _humanPlayerSide = humanPlayerSide;
   }
 
-/**
-  /// 0 = Not Playing / 1 = Player 1 ("X") / 2 = Player 2 ("O")
-  GameManager(int humanPlayerSide) {
-    _humanPlayerSide = humanPlayerSide;
-
-    WidgetsFlutterBinding.ensureInitialized();
-    bestMovesO = rootBundle.loadString("Player_O_AI.json").then((jsonContentO) => parseJson(jsonContentO));
-    bestMovesX = rootBundle.loadString("Player_X_AI.json").then((jsonContentX) => parseJson(jsonContentX));
-
-  }
- */
   void parseJson(jsonContent) {
     bestMovesO = json.decode(jsonContent);
   }

@@ -75,16 +75,16 @@ class _FoundationState extends State<Foundation> {
   String supportPageTitle = "Support Us";
 
   static const HOME = 0;
-  static const ABOUT = 1;
-  static const PLAY = 2;
-  static const SUPPORT = 3;
+  //static const ABOUT = 1;
+  static const PLAY = 1;
+  static const SUPPORT = 2;
 
   // Create a key for the widget to open drawer
   final  GlobalKey<ScaffoldState> _key = GlobalKey();
   int sizeBreakingPoint = 800;
 
   // Lists of pages that the user can be redirected to
-  late List<AppPages> appPages = [HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,), AboutPage(),
+  late List<AppPages> appPages = [HomePage(widthBreakPoint: sizeBreakingPoint, goToNextPage: changePageTo,),
     PlayPage(widthBreakPoint: sizeBreakingPoint, dialogScaffoldKey: _key,), SupportPage(widthBreakingPoint: sizeBreakingPoint)];
 
   int currentIndex = 0;
@@ -152,15 +152,6 @@ class _FoundationState extends State<Foundation> {
                 padding: const EdgeInsets.all(15),
                 child: TextButton(
                   onPressed: () {
-                    changePageTo(ABOUT);
-                  },
-                  child: Text(aboutPageTitle),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: TextButton(
-                  onPressed: () {
                     changePageTo(PLAY);
                   },
                   child: Text(playPageTitle),
@@ -222,6 +213,7 @@ class _FoundationState extends State<Foundation> {
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
                 changePageTo(HOME);
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -230,14 +222,7 @@ class _FoundationState extends State<Foundation> {
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
                 changePageTo(PLAY);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info_outline, color: Colors.greenAccent,),
-              title: Text(aboutPageTitle),
-              contentPadding: EdgeInsets.only(right: 30, left: 30),
-              onTap: () {
-                changePageTo(ABOUT);
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -246,6 +231,7 @@ class _FoundationState extends State<Foundation> {
               contentPadding: EdgeInsets.only(right: 30, left: 30),
               onTap: () {
                 changePageTo(SUPPORT);
+                Navigator.pop(context);
               },
             ),
           ],

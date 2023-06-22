@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/Utils/GameManager.dart';
 
@@ -11,7 +13,7 @@ class GameBoard extends StatefulWidget {
     required this.size,
     required this.manager,
     required this.gameMode,
-    this.difficulty = "beginner",
+    this.difficulty = "Intermediate",
     required this.endGameCallBack,
     this.humanPlayerSide = 1
   }) : super(key: key);
@@ -37,6 +39,7 @@ class GameBoardState extends State<GameBoard> {
   List<String> playerSides = ["X", "O"];
 
   int _humanPlayerSide = 1;
+  String _diff = "Intermediate";
 
   // Function that returns whether it is 'O''s turn or 'X''s turn.
   // Called by each block state.
@@ -50,6 +53,11 @@ class GameBoardState extends State<GameBoard> {
     });
   }
 
+  void setDifficulty(String difficulty) {
+    setState(() {
+      _diff = difficulty;
+    });
+  }
 
   /// This is a callback function for a blockState.
   /// Called whenever a player makes a move and activated onPress.
@@ -70,11 +78,11 @@ class GameBoardState extends State<GameBoard> {
       if (widget.gameMode == 0) {
         // AI can move if it is not player's turn
         if (widget.manager.humanPlayerSide != widget.manager.whoseTurn) {
-          aiMove(widget.difficulty);
+          aiMove(_diff);
         }
       } else {
         // EVE mode
-        aiMove(widget.difficulty);
+        aiMove(_diff);
       }
     }
   }
@@ -124,40 +132,64 @@ class GameBoardState extends State<GameBoard> {
 
   /// This function is called after a player makes a move or an AI makes a move.
   /// This function will directly change the state of the block in order to display the correct value.
-  // TODO - Implement this method and replace the stub code
   void aiMove(String difficulty) {
-    print("AI Moving");
-    // Stub code - remove the code below
-    // List<int> possibleMoves = [];
-    // for (int i = 0; i < 9; i++) {
-    //   if (widget.manager.boardState[i] == 0) {
-    //     possibleMoves.add(i);
-    //   }
-    // }
-    // possibleMoves.add(getMoveO());
-
-    // Keep the code below, but change the condition of the next line if needed.
-    // Set the state of the desired button.
-    // if (possibleMoves.isNotEmpty) {
-    //   int move = possibleMoves[Random().nextInt(possibleMoves.length)];
-      int move;
+    print("$difficulty AI Moving");
+    int move;
+    // Get the move according to the difficulty
+    if (difficulty == 'Beginner') { // Beginner difficulty is mostly 15% random
+      int probabilty = Random().nextInt(20);
+      if (probabilty <= 3) {
+        List<int> possibleMoves = [];
+        for (int i = 0; i < 9; i++) {
+          if (widget.manager.boardState[i] == 0) {
+            possibleMoves.add(i);
+          }
+        }
+        move = possibleMoves[Random().nextInt(possibleMoves.length)];
+      } else {
+        if (_humanPlayerSide == 1) {
+          move = getMoveO();
+        } else {
+          move = getMoveX();
+        }
+      }
+    } else if (difficulty == 'Intermediate') { // Intermediate is 5% random
+      int probabilty = Random().nextInt(20);
+      if (probabilty <= 1) {
+        List<int> possibleMoves = [];
+        for (int i = 0; i < 9; i++) {
+          if (widget.manager.boardState[i] == 0) {
+            possibleMoves.add(i);
+          }
+        }
+        move = possibleMoves[Random().nextInt(possibleMoves.length)];
+      } else {
+        if (_humanPlayerSide == 1) {
+          move = getMoveO();
+        } else {
+          move = getMoveX();
+        }
+      }
+    } else { // Expert is fully AI operated
       if (_humanPlayerSide == 1) {
         move = getMoveO();
       } else {
         move = getMoveX();
       }
-      // Delay 1 second for a better appearance
-      // First, make every button disabled
-      blockEnableDisableSwitch();
+    }
+    // Set the state of the desired button.
+    // Delay 1 second for a better appearance
+    // First, make every button disabled
+    blockEnableDisableSwitch();
 
-      // Second, delay for 1 second
-      Future.delayed(const Duration(seconds: 1), (){
-        // Third, make the temporally disabled button back to enabled
-        blockEnableDisableSwitch();
+    // Second, delay for 1 second
+    Future.delayed(const Duration(seconds: 1), (){
+    // Third, make the temporally disabled button back to enabled
+    blockEnableDisableSwitch();
 
-        // Fourth, set the desired block to a played move
-        gameBoardStateKeys[move].currentState!.changeState();
-      });
+    // Fourth, set the desired block to a played move
+    gameBoardStateKeys[move].currentState!.changeState();
+    });
   }
 
   /// Setting all empty blocks to disable if the block is enabled
@@ -175,7 +207,7 @@ class GameBoardState extends State<GameBoard> {
     if (_humanPlayerSide == 0 || _humanPlayerSide == 2) {
       // After 30ms, the AI makes its first move
       await Future.delayed(const Duration(milliseconds: 30), () {
-        aiMove(widget.difficulty); //TODO - In this method, only AI_O is moving - Take in extra parameter? Check whose turn within manager?
+        aiMove(_diff);
       });
     }
   }
@@ -192,7 +224,7 @@ class GameBoardState extends State<GameBoard> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_humanPlayerSide == 0 || _humanPlayerSide == 2) {
         print("AI's First Move");
-        aiMove(widget.difficulty);
+        aiMove(_diff);
       }
     });
   }

@@ -12,7 +12,7 @@ class FileToWidget {
   double headerFontSize;
   double normalFontSize;
 
-  FileToWidget({required this.filePath, this.headerFontSize = 24, this.normalFontSize = 14});
+  FileToWidget({required this.filePath, this.headerFontSize = 28, this.normalFontSize = 14});
 
   // This function returns a FutureBuilder that builds the block.
   Widget getFutureBuilder() {
@@ -56,22 +56,25 @@ class FileToWidget {
     late EdgeInsets padding;
     late FontWeight weight;
     late double fontSize;
+    late var decoration;
 
     // If line starts with '###', this is a header line
     if(line.startsWith("###")) {
-      padding = EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 10);
+      padding = EdgeInsets.only(left: 50, right: 50, top: 30, bottom: 5);
       weight = FontWeight.w700;
       line = line.substring(3);
       fontSize = headerFontSize;
+      decoration = TextDecoration.underline;
     } else {
-      padding = EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10);
+      padding = EdgeInsets.only(left: 50, right: 50, top: 5, bottom: 10);
       weight = FontWeight.w400;
       fontSize = normalFontSize;
+      decoration = TextDecoration.none;
     }
     // Else this is not a heading
     return Padding(
       padding: padding,
-      child: Text(line, style: TextStyle(fontWeight: weight, color: Colors.white, fontSize: fontSize),),
+      child: Text(line, style: TextStyle(fontWeight: weight, color: Colors.white, fontSize: fontSize, decoration: decoration),),
     );
   }
 

@@ -27,7 +27,7 @@ class _PlayPageState extends State<PlayPage> {
 
   // List for difficulties
   List<String> difficulties = ["Beginner", "Intermediate", "Expert"];
-  String seletedDifficulties = "Beginner";
+  String seletedDifficulties = "Intermediate";
 
   // Game Manager for the board
   late GameManager manager;
@@ -162,8 +162,8 @@ class _PlayPageState extends State<PlayPage> {
                     child: Container(
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50),
+                          bottomLeft: Radius.circular(50),
+                          bottomRight: Radius.circular(50),
                         ),
                       ),
                       child: Column(
@@ -178,7 +178,7 @@ class _PlayPageState extends State<PlayPage> {
                           const Padding(
                             padding: EdgeInsets.all(18.0),
                             child: Text("Game Ends.", style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w800),),
+                                fontSize: 20, fontWeight: FontWeight.w800, color: Colors.blue),),
                           ),
                           const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -255,6 +255,7 @@ class _PlayPageState extends State<PlayPage> {
                     setState(() {
                       seletedDifficulties = value;
                       // Reset the score and the board
+                      gameBoardKey.currentState!.setDifficulty(seletedDifficulties);
                       gameBoardKey.currentState!.endGameProtocol(0);
                       manager.resetScores();
                       _setScoreText();
@@ -332,7 +333,7 @@ class _PlayPageState extends State<PlayPage> {
               ),
             ),
             ListTile(
-              visualDensity: VisualDensity(vertical: 0),
+              visualDensity: VisualDensity(vertical: -2),
               title: Align(alignment: Alignment.centerLeft, child: playerSide[1]),
               leading: Radio<Icon>(
                 value: playerSide[1],

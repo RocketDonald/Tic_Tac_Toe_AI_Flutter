@@ -1,0 +1,2 @@
+###Best Move
+Each time we run the training, the program will keep updating the Q-Table and K-Table, which keep track of the maximum expected future rewards. The higher the reward value, the better the move will be.
